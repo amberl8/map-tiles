@@ -65,6 +65,23 @@
         #menu a.active:hover {
             background: #3074a4;
         }
+
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.8);
+            border-style: solid;
+            border-width: 1px;
+            border-color: rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+            margin-left: 10px;
+            font-family: Arial, sans-serif;
+            overflow: auto;
+            border-radius: 3px;
+            padding-left: 4px;
+            padding-right: 4px;
+        }
     </style>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js"></script>
 </head>
@@ -72,6 +89,9 @@
 <body>
     <nav id="menu"></nav>
     <div id='map'></div>
+    <div class='map-overlay' id='features'>
+      <h2>Map Design and Tile Generation</h2>
+    </div>
     <script type="text/javascript">
         mapboxgl.accessToken =
             'pk.eyJ1IjoiamFrb2J6aGFvIiwiYSI6ImNpcms2YWsyMzAwMmtmbG5icTFxZ3ZkdncifQ.P9MBej1xacybKcDN_jehvw';
@@ -85,6 +105,8 @@
         });
 
         map.on('load', () => { //simplifying the function statement: arrow with brackets to define a function
+
+            map.addControl(new mapboxgl.ScaleControl({position: 'bottom-right'}));
 
             map.addSource('base-tiles', {
                 'type': 'raster',
@@ -123,7 +145,7 @@
             });
 
             map.addLayer({
-                'id': 'base',
+                'id': 'Modified Basemap',
                 'type': 'raster',
                 'layout': {
                     'visibility': 'none'
@@ -132,7 +154,7 @@
             });
 
             map.addLayer({
-                'id': 'spl',
+                'id': 'Seattle Public Library Locations',
                 'type': 'raster',
                 'layout': {
                     'visibility': 'none'
@@ -141,7 +163,7 @@
             });
 
             map.addLayer({
-                'id': 'base-with-spl',
+                'id': 'Basemap with SPL Locations',
                 'type': 'raster',
                 'layout': {
                     'visibility': 'none'
@@ -150,7 +172,7 @@
             });
 
             map.addLayer({
-                'id': 'lgbtq',
+                'id': 'LGBTQ+ Theme',
                 'type': 'raster',
                 'layout': {
                     'visibility': 'none'
@@ -163,12 +185,12 @@
         // After the last frame rendered before the map enters an "idle" state.
         map.on('idle', () => {
             // If these two layers were not added to the map, abort
-            if (!map.getLayer('base') || !map.getLayer('spl') || !map.getLayer('base-with-spl') || !map.getLayer('lgbtq')) {
+            if (!map.getLayer('Modified Basemap') || !map.getLayer('Seattle Public Library Locations') || !map.getLayer('Basemap with SPL Locations') || !map.getLayer('LGBTQ+ Theme')) {
                 return;
             }
 
             // Enumerate ids of the layers.
-            const toggleableLayerIds = ['base', 'spl', 'base-with-spl', 'lgbtq'];
+            const toggleableLayerIds = ['Modified Basemap', 'Seattle Public Library Locations', 'Basemap with SPL Locations', 'LGBTQ+ Theme'];
 
             // Set up the corresponding toggle button for each layer.
             for (const id of toggleableLayerIds) {
